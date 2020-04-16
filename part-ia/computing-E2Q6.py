@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io.wavfile
-import winsound
 filename = "sounds/comp-E2Q6-speech.wav"
 
 # Read frequency and data array for sound track
@@ -23,7 +22,7 @@ plt.ylabel('signal')
 # plt.show()
 
 # Perform discrete Fourier transform (real signal)
-xf = np.fft.rfft(x)
+xf = np.fft.fft(x)
 
 # Create frequency axis for plotting
 freq = np.linspace(0.0, fs/2, len(xf))
@@ -40,7 +39,7 @@ xf_filtered = xf.copy()
 
 # Cut-off frequencies (Hz)
 cutoff_freq_low = 20
-cutoff_freq_high = 1e5
+cutoff_freq_high = 2000
 
 # Cut-off indices in transform array
 n_cut_low = int(2*cutoff_freq_low*len(xf_filtered)/fs)
@@ -58,7 +57,7 @@ xf_filtered[n_cut_high:] = 0.0
 
 # ---
 # Perform inverse transform on filtered signal
-x_filtered = np.fft.irfft(xf_filtered, len(xf_filtered))
+x_filtered = np.abs(np.fft.ifft(xf_filtered))
 
 # Plot signal
 plt.plot(x_filtered, label="filtered", alpha = .5)
