@@ -16,7 +16,7 @@ def symmetric(x, h):
 def run(approx_func):
 	xs = 10 ** np.arange(1, 5)
 	hs = 10.0 ** np.arange(-9, -16, -3)
-	rel_error = np.zeros((4, 3))
+	rel_error = np.zeros((len(xs), len(hs)))
 
 	fig, ax = plt.subplots()
 	ax.set_title(f"Relative error of {approx_func.__name__} compared to exact derivative")
@@ -30,7 +30,7 @@ def run(approx_func):
 	plt.subplots_adjust(bottom=0.3)
 
 	for i, x in enumerate(xs):
-		r = abs((approx_func(x, hs) - df(x)) / df(x))
+		r = np.abs((approx_func(x, hs) - df(x)) / df(x))
 		rel_error[i, :] = r
 		ax.loglog(hs[::-1], r)
 
