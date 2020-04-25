@@ -7,11 +7,6 @@ filename = "sounds/comp-E2Q6-speech.wav"
 fs, x = scipy.io.wavfile.read(filename)
 print(f"fs = {fs} Hz")
 
-# If we have a stero track (left and right channels), take just the first channel
-if len(x.shape) > 1:
-    x = x[:, 0]
-
-
 # Time points (0 to T, with T*fs points)
 t = np.linspace(0, len(x)/fs, len(x), endpoint=False)
 
@@ -29,7 +24,7 @@ ax1.set_xlabel('time (seconds)')
 ax1.set_ylabel('signal')
 
 # Perform discrete Fourier transform (real signal)
-xf = np.fft.fft(x)
+xf = np.fft.rfft(x)
 
 # Create frequency axis for plotting
 freq = np.linspace(0.0, fs/2, len(xf))
@@ -40,11 +35,11 @@ ax2.set_ylabel('$\hat{x}$')
 
 # ---
 
-# Create copy og transformed signal
+# Create copy of transformed signal
 xf_filtered = xf.copy()
 
 # Cut-off frequencies (Hz)
-cutoff_freq_low = 20
+cutoff_freq_low = 500
 cutoff_freq_high = 2000
 
 # Cut-off indices in transform array
@@ -62,16 +57,17 @@ ax3.set_ylabel('$\hat{x}$')
 
 # ---
 # Perform inverse transform on filtered signal
-x_filtered = np.abs(np.fft.ifft(xf_filtered))
+x_filtered = np.fft.irfft(xf_filtered)
 
 # Plot signal
-ax4.plot(x_filtered, label="filtered", alpha = .5)
+ax4.plot(t, x_filtered)
 ax4.set_xlabel('Time (seconds)')
 ax4.set_ylabel('signal')
-ax4.legend()
 
-
-
-scipy.io.wavfile.write("sounds/comp-E2Q6-speechfiltered.wav", fs, x_filtered)
+print(x.shape, x_filtered.shape)
+# wavfile must be integers
+# soln taken from https://stackoverflow.com/q/10357992/12126787
+scaled = np.int16(x_filtered/np.max(np.abs(x_filtered)) * 32767)
+scipy.io.wavfile.write("sounds/comp-E2Q6-speechfiltered.wav", fs, scaled)
 
 plt.show()
