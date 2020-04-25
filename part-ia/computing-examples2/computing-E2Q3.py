@@ -32,5 +32,5 @@ if __name__ == "__main__":
 	ax.invert_xaxis()
 	ax.legend()
 	ax.set_xlabel("h")
-
+	fig.savefig('images/comp-E2Q3-derivativeaccuracy')
 	plt.show()
