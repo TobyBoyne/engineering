@@ -64,10 +64,9 @@ ax4.plot(t, x_filtered)
 ax4.set_xlabel('Time (seconds)')
 ax4.set_ylabel('signal')
 
-print(x.shape, x_filtered.shape)
 # wavfile must be integers
 # soln taken from https://stackoverflow.com/q/10357992/12126787
 scaled = np.int16(x_filtered/np.max(np.abs(x_filtered)) * 32767)
 scipy.io.wavfile.write("sounds/comp-E2Q6-speechfiltered.wav", fs, scaled)
-
+fig.savefig('images/comp-E2Q6-signalgraphs')
 plt.show()
