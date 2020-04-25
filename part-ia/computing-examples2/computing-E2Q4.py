@@ -18,12 +18,19 @@ def run(ax, approx_func):
 
 	ax.set_title(f'{approx_func.__name__}')
 	ax.set_ylabel('Relative error')
-	# ax.tick_params(
-	# 	axis='x',
-	# 	labelbottom=False,
-	# 	which='both',
-	# 	bottom=False
-	# )
+	ax.tick_params(
+		axis='x',
+		labelbottom=True,
+		which='minor',
+		bottom=False
+	)
+
+	ax.tick_params(
+		axis='y',
+		labelleft=True,
+		which='major',
+		left=True
+	)
 
 	for i, x in enumerate(xs):
 		r = np.abs((approx_func(x, hs) - df(x)) / df(x))
@@ -36,12 +43,23 @@ def run(ax, approx_func):
 	return rel_error
 
 
+def print_table(complex_error, symmetric_error):
+	for i, h in enumerate(hs):
+		print(f'For h={h}:')
+		for j, x in enumerate(xs):
+			print(f'At x={x}, \n\tcomplex error={complex_error[j, i]:.4e}'
+				  f'\n\tsymmetric error={symmetric_error[j, i]:.4e}')
+
+
 if __name__ == "__main__":
 	xs = 10.0 ** np.arange(1, 5)
 	hs = 10.0 ** np.arange(-9, -16, -3)
 
-	fig, ((ax_complex, ax_symmetric), (table_complex, table_symmetric)) = plt.subplots(2, 2, sharey='row')
-	run(ax_complex, approx_func=complex_step)
-	run(ax_symmetric, approx_func=symmetric)
+	fig, (ax_complex, ax_symmetric) = plt.subplots(1, 2, sharey='row', figsize=(10, 5))
+	complex_error = run(ax_complex, approx_func=complex_step)
+	symmetric_error = run(ax_symmetric, approx_func=symmetric)
+	fig.tight_layout(pad=2.0)
+
 	plt.savefig(f"images/comp-E2Q4-comparisons")
+	print_table(complex_error, symmetric_error)
 	plt.show()
