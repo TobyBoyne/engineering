@@ -15,11 +15,18 @@ if len(x.shape) > 1:
 # Time points (0 to T, with T*fs points)
 t = np.linspace(0, len(x)/fs, len(x), endpoint=False)
 
+# Create subplots
+fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
+ax1.set_title('Original Signal')
+ax2.set_title('Fourier Transform')
+ax3.set_title('Filtered Fourier Transform')
+ax4.set_title('Output Signal')
+fig.tight_layout(pad=3.0)
+
 # Plot signal
-plt.plot(t, x, label= "original")
-plt.xlabel('time (seconds)')
-plt.ylabel('signal')
-# plt.show()
+ax1.plot(t, x, label= "original")
+ax1.set_xlabel('time (seconds)')
+ax1.set_ylabel('signal')
 
 # Perform discrete Fourier transform (real signal)
 xf = np.fft.fft(x)
@@ -27,10 +34,9 @@ xf = np.fft.fft(x)
 # Create frequency axis for plotting
 freq = np.linspace(0.0, fs/2, len(xf))
 
-# plt.semilogy(freq, np.abs(xf))
-# plt.xlabel('frequency (Hz)')
-# plt.ylabel('$\hat{x}$')
-# plt.show()
+ax2.semilogy(freq, np.abs(xf))
+ax2.set_xlabel('frequency (Hz)')
+ax2.set_ylabel('$\hat{x}$')
 
 # ---
 
@@ -50,22 +56,22 @@ xf_filtered[:n_cut_low] = 0.0
 xf_filtered[n_cut_high:] = 0.0
 
 # Plot filtered transform
-# plt.semilogy(freq, np.abs(xf_filtered))
-# plt.xlabel('frequency (Hz)')
-# plt.ylabel('$\hat{x}$')
-# plt.show()
+ax3.semilogy(freq, np.abs(xf_filtered))
+ax3.set_xlabel('frequency (Hz)')
+ax3.set_ylabel('$\hat{x}$')
 
 # ---
 # Perform inverse transform on filtered signal
 x_filtered = np.abs(np.fft.ifft(xf_filtered))
 
 # Plot signal
-plt.plot(x_filtered, label="filtered", alpha = .5)
-plt.xlabel('Time (seconds)')
-plt.ylabel('signal')
-plt.legend()
-plt.show()
+ax4.plot(x_filtered, label="filtered", alpha = .5)
+ax4.set_xlabel('Time (seconds)')
+ax4.set_ylabel('signal')
+ax4.legend()
+
+
 
 scipy.io.wavfile.write("sounds/comp-E2Q6-speechfiltered.wav", fs, x_filtered)
 
-# winsound.PlaySound("sounds/comp-E2Q6-speechfiltered.wav", winsound.SND_FILENAME)
+plt.show()
