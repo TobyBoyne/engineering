@@ -18,6 +18,7 @@ def run(ax, approx_func):
 
 	ax.set_title(f'{approx_func.__name__}')
 	ax.set_ylabel('Relative error')
+	ax.set_xlabel('h')
 	ax.tick_params(
 		axis='x',
 		labelbottom=True,
@@ -35,9 +36,10 @@ def run(ax, approx_func):
 	for i, x in enumerate(xs):
 		r = np.abs((approx_func(x, hs) - df(x)) / df(x))
 		rel_error[i, :] = r
-		ax.loglog(hs[::-1], r)
+		ax.loglog(hs[::], r)
 
 	ax.legend([f"x={x}" for x in xs])
+	ax.invert_xaxis()
 
 
 	return rel_error
